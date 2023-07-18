@@ -1,10 +1,12 @@
+/**
+ * The MainActivity class is the main activity of the 7 Minutes Workout app, responsible for
+ * handling the start button click event and navigating to the ExerciseActivity.
+ */
 package com.example.a7minutesworkout
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.FrameLayout
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.a7minutesworkout.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

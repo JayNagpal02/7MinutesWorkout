@@ -1,3 +1,5 @@
+/** The code snippet is importing necessary classes and packages for the `ExerciseActivity` class. These
+imports are required for the functionality and features used in the `ExerciseActivity` class. */
 package com.example.a7minutesworkout
 
 import android.app.Activity
@@ -10,10 +12,12 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a7minutesworkout.databinding.ActivityExerciseBinding
 import java.util.Locale
 
 class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+    /* These are instance variables declared in the `ExerciseActivity` class. */
     private var binding: ActivityExerciseBinding? = null
 
     private var restTimer: CountDownTimer? = null
@@ -28,6 +32,16 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
     private var player: MediaPlayer? = null
 
+    private var exerciseAdapter: ExerciseStatusAdapter? = null
+
+    /**
+     * This function sets up the activity layout, toolbar, and initializes variables and listeners.
+     *
+     * @param savedInstanceState The `savedInstanceState` parameter is a Bundle object that contains
+     * the data saved from the previous state of the activity. It is used to restore the activity's
+     * state when it is recreated, such as during a configuration change (e.g., screen rotation) or
+     * when the activity is temporarily destroyed and then recreated
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityExerciseBinding.inflate(layoutInflater)
@@ -49,8 +63,20 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         setupRestView()
+        setupExerciseStatusRecyclerView()
     }
 
+    private fun setupExerciseStatusRecyclerView() {
+        binding?.rvExerciseStatus?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        exerciseAdapter = ExerciseStatusAdapter(exerciseList!!)
+        binding?.rvExerciseStatus?.adapter = exerciseAdapter
+    }
+
+    /**
+     * The function sets up the view for the rest period in a workout app, including playing a sound,
+     * updating visibility of various UI elements, and setting up a progress bar.
+     */
     private fun setupRestView() {
 
         try {
@@ -96,6 +122,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             override fun onFinish() {
                 currentExercisePosition++
+                exerciseList!![currentExercisePosition].setIsSelected(true)
+                exerciseAdapter!!.notifyDataSetChanged()
                 setupExerciseView()
             }
         }.start()
@@ -134,6 +162,9 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
 
             override fun onFinish() {
+                exerciseList!![currentExercisePosition].setIsSelected(false)
+                exerciseList!![currentExercisePosition].setIsCompleted(true)
+                exerciseAdapter!!.notifyDataSetChanged()
                 if (currentExercisePosition < exerciseList?.size!! - 1) {
                     setupRestView()
                 } else {
@@ -165,7 +196,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             tts?.shutdown()
         }
 
-        if(player != null) {
+        if (player != null) {
             player!!.stop()
         }
 
